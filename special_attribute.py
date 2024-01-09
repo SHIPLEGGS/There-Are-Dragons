@@ -1,5 +1,6 @@
 import random
-from Main import all_trainers
+from dragon import Rongwield
+from trainer import Trainer
 
 
 class Special_Attribute:
@@ -20,13 +21,13 @@ Tiber_2 = Special_Attribute("Chimarmavidium: The Last Miracle of Kagrenac")
 Indoril = Special_Attribute("Saint Nerevar, Moon-and-star")
 
 
-def special_attribute_check(trainer, dragon, enemy):
+def special_attribute_check(trainer, dragon, enemy, attack_type):
     for i in trainer.special_attributes:
         if i.name == "Toothless":
-            dragon.attack_damage = 0
+            dragon.attack_types[attack_type] = 0
             if dragon.health < (dragon.health / 100) * 20:
                 dragon.attack_modify(dragon)
-                dragon.attack_damage = dragon.attack_damage * 3
+                dragon.attack_types[attack_type] = dragon.attack_types[attack_type] * 3
                 print("Critical Strike")
         elif i.name == "Bend Will":
             chance_to_bend_will_1 = random.randint(0, 4)
@@ -39,7 +40,7 @@ def special_attribute_check(trainer, dragon, enemy):
             if trainer.lives <= 0 and Miraak_Shout.ResurrectCount != 0:
                 print("Zii Los Dii Du")
                 trainer.lives += 1
-                dragon.attack_damage = 10000
+                dragon.attack_types[attack_type] = 10000
             else:
                 print("Miraak Slain")
         elif i.name == "Flight of the Valkyrie":
@@ -48,12 +49,12 @@ def special_attribute_check(trainer, dragon, enemy):
                 dragon.speed += 5
             else:
                 print("So you have chosen violence...")
-                dragon.attack_damage += 2
+                dragon.attack_types[attack_type] += 2
         elif i.name == "Angmar's Dominion":
             for souls in Nazgul.Dragons_Slain:
-                dragon.attack_damage += 10
+                dragon.attack_types[attack_type] += 10
                 print("The foul kingdom should rise again!")
-            if (enemy.health - dragon.attack_damage) <= 0:
+            if (enemy.health - dragon.attack_types[attack_type]) <= 0:
                 Nazgul.Dragons_Slain.append(enemy)
         elif i.name == "The Dragonborn King":
             if dragon.health > enemy.health:
@@ -71,7 +72,7 @@ def special_attribute_check(trainer, dragon, enemy):
                 print("The Heart of Lorkhan Prevails")
                 for dragons in trainer.dragons:
                     dragons.health += 100
-                    dragons.attack_damage += 5
+                    dragons.attack_types[attack_type] += 5
                     dragons.attack_speed += 5
                     dragons.size += 5
                     dragons.eyesight.replace(dragons.eyesight, "All-Seeing")
@@ -86,3 +87,33 @@ def special_attribute_check(trainer, dragon, enemy):
             for my_dragons in range(stars):
                 for my_dragon in trainer.dragons:
                     trainer.level_up_dragon(my_dragon)
+
+
+Hiccup = Trainer("Hiccup", 0, 4, 15)
+Hiccup.special_attributes.append(Toothless)
+
+Miraak = Trainer("Miraak", 4, 3, 8)
+Miraak.special_attributes.append(Miraak_Shout)
+Miraak.special_attributes.append(Bend_Will)
+
+Astrid = Trainer("Astrid", 4, 10, 6)
+Astrid.special_attributes.append(Valkyrie)
+
+Isildur = Trainer("Isildur", 8, 6, 6)
+Isildur.special_attributes.append(Nazgul)
+
+Reman_Cyrodiil = Trainer("Reman Cyrodiil", 7, 7, 7)
+Reman_Cyrodiil.special_attributes.append(Dragonborn_King)
+
+Tiber_Septim = Trainer("Tiber Septim", 12, 10, 12)
+Tiber_Septim.special_attributes.append(Tiber_1)
+Tiber_Septim.special_attributes.append(Tiber_2)
+
+Nerevar = Trainer("Indoril Nerevar", 0, 0, 0)
+Nerevar.special_attributes.append(Indoril)
+
+all_trainers = [Hiccup, Miraak, Astrid, Isildur, Reman_Cyrodiil, Tiber_Septim, Nerevar]
+
+print(Rongwield.speed)
+Isildur.speed_modify(Rongwield)
+Isildur.attack_modify(Rongwield, 1)
