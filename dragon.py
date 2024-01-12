@@ -25,12 +25,12 @@ class Dragon:
         self.speed_modifiers = [self.size, self.speed, self.attack_speed]
         self.attack_types = [self.attack_damage, self.magic_damage]
 
-    def attack_bite(self, user_trainer, dragon, enemy):
-        special_attribute.special_attributes_unique_run(dragon, user_trainer, 0, enemy)
+    def attack_bite(self, user_trainer, enemy):
+        special_attribute.special_attributes_unique_run(self, user_trainer, 0, enemy)
         enemy.health -= self.attack_damage
 
-    def attack_breath_fire(self, user_trainer, dragon, enemy):
-        special_attribute.special_attributes_unique_run(dragon, user_trainer, 1, enemy)
+    def attack_breath_fire(self, user_trainer, enemy):
+        special_attribute.special_attributes_unique_run(self, user_trainer, 1, enemy)
         enemy.health -= self.magic_damage
 
     def get_dragon_attributes(self):

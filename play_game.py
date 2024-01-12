@@ -27,7 +27,8 @@ def tutorial_run():
 class User:
 
     def __init__(self):
-        self.user_name = None
+        self.lives = 3
+        self.name = None
         self.choice = -1
         self.trainer = trainer.Trainer(name="", strength=0, speed=0, cunning=0)
         self.friendly_intro = 0
@@ -65,12 +66,12 @@ class User:
                     self.trainer.speed = options[j].speed
                     self.trainer.cunning = options[j].cunning
                     self.trainer.name = self.trainer.name.replace("", options[j].name)
-                    self.trainer.dragons = options[j].dragons
+                    self.dragons = options[j].dragons
                     trainer.beginner_trainers.remove(options[j])
                     trainer.all_trainers.remove(options[j])
                     choice = 1
             if choice == 1:
-                print("You Chose: " + self.trainer.name)
+                print("You Chose: " + self.trainer.name + "\n")
             else:
                 print("That is not a valid option, try again.")
                 self.failed_inputs += 1
@@ -80,20 +81,20 @@ class User:
         while True:
             if choice_input == 0:
                 choice_input = 1
-                self.user_name = input("To begin, please enter a Username\n ==> ")
-                if len(self.user_name) < 2 or len(self.user_name) > 8:
+                self.name = input("To begin, please enter a Username\n ==> ")
+                if len(self.name) < 2 or len(self.name) > 8:
                     print("Usernames must be 2 to 8 characters long.")
                 else:
                     choice_input = 2
             if choice_input == 1:
-                self.user_name = input("Please enter a valid Username\n ==> ")
-                if len(self.user_name) < 2 or len(self.user_name) > 8:
+                self.name = input("Please enter a valid Username\n ==> ")
+                if len(self.name) < 2 or len(self.name) > 8:
                     print("Usernames must be 2 to 8 characters long.")
                 else:
                     choice_input = 2
             if choice_input == 2 or choice_input == 3:
                 if choice_input == 2:
-                    print("You have chosen: " + self.user_name)
+                    print("You have chosen: " + self.name)
                     print("To continue press \'1\'. To choose a different name press \'0\'.")
                 username_confirm = input(" ==> ")
                 if username_confirm == "1":
@@ -111,52 +112,60 @@ class User:
             exit()
         first_or_second = random.randint(0, 1)
         first_or_second_attack = random.randint(0, 1)
-        choice = random.randint(0, len(trainer.all_trainers))
-        choice_1 = random.randint(0, len(trainer.beginner_trainers))
-        print("Round -- " + str(self.round_number))
+        choice = random.randint(0, len(trainer.all_trainers) - 1)
+        choice_1 = random.randint(0, len(trainer.beginner_trainers) - 1)
+        print("Round -- " + str(self.round_number) + "\n")
         if self.friendly_intro < 2:
             opponent = trainer.beginner_trainers[choice_1]
-            dragon_choice = random.randint(0, len(opponent.dragons))
-            print(dragon_choice)
+            dragon_choice = random.randint(0, len(opponent.dragons) - 1)
         else:
             opponent = trainer.all_trainers[choice]
-            dragon_choice = random.randint(0, len(opponent.dragons))
+            dragon_choice = random.randint(0, len(opponent.dragons) - 1)
         print("Your opponent is: " + opponent.name)
         if first_or_second == 0:
             print("They have chosen: " + opponent.dragons[dragon_choice].name)
             opponent.opponent = opponent.dragons[dragon_choice]
             opponent.dragons[dragon_choice].get_dragon_attributes()
         else:
-            print("Which dragon would you like to pick: ")
             for i in self.dragons:
-                print(i.name + str(self.choice_increment()))
+                print("Which dragon would you like to pick: ")
+                print(i.name + " " + str(self.choice_increment()))
                 while True:
                     chose_dragon = input(" ==> ")
-                    if i == self.dragons[int(chose_dragon)]:
-                        self.chosen_dragon = i
-                        print("You chose: " + self.dragons[int(chose_dragon)].name)
-                        break
-                    else:
-                        print("You have not selected a valid option.")
+                    try:
+                        chose_dragon = int(chose_dragon)
+                        if chose_dragon not in range(len(self.dragons)):
+                            print("You have not selected a valid option.")
+                            self.failed_inputs += 1
+                        else:
+                            self.chosen_dragon = self.dragons[chose_dragon]
+                            print("You chose: " + self.chosen_dragon.name)
+                            break
+                    except ValueError:
+                        print("Invalid response")
                         self.failed_inputs += 1
-        if first_or_second == 0:
-            print("Which dragon would you like to pick: ")
-            for i in self.dragons:
-                print(i.name + str(self.choice_increment()))
-                while True:
-                    chose_dragon = input(" ==> ")
-                    if i == self.dragons[int(chose_dragon)]:
-                        self.chosen_dragon = i
-                        print("You chose: " + self.dragons[int(chose_dragon)].name)
-                        break
-                    else:
-                        print("You have not selected a valid option.")
-                        self.failed_inputs += 1
-        else:
+        if first_or_second == 1:
             print("They have chosen: " + opponent.dragons[dragon_choice].name)
             opponent.opponent = opponent.dragons[dragon_choice]
             opponent.dragons[dragon_choice].get_dragon_attributes()
-
+        else:
+            for i in self.dragons:
+                print("Which dragon would you like to pick: ")
+                print(i.name + " " + str(self.choice_increment()))
+                while True:
+                    chose_dragon = input(" ==> ")
+                    try:
+                        chose_dragon = int(chose_dragon)
+                        if chose_dragon not in range(len(self.dragons)):
+                            print("You have not selected a valid option.")
+                            self.failed_inputs += 1
+                        else:
+                            self.chosen_dragon = self.dragons[chose_dragon]
+                            print("You chose: " + self.chosen_dragon.name)
+                            break
+                    except ValueError:
+                        print("Invalid response")
+                        self.failed_inputs += 1
         if first_or_second_attack == 0:
             opponent_action = random.randint(0, 2)
             print("Your opponent engages!")
@@ -172,8 +181,7 @@ class User:
                 opponent.opponent.attack_breath_fire(opponent, self.chosen_dragon)
 
             elif opponent_action == 2:
-                print("You opponets strafes evasively ")
-        else:
+                print("You opponets strafes evasively\n")
             print("Command your dragon!")
             print("Bite: 0\nVerbal Assault: 1\nDodge: 2")
             while True:
@@ -192,12 +200,56 @@ class User:
                     break
                 else:
                     print("Invalid option!")
+        else:
+            print("Command your dragon!")
+            print("Bite: 0\nVerbal Assault: 1\nDodge: 2")
+            while True:
+                action = input(" ==> ")
+                if action == "0":
+                    self.trainer.speed_modify(self.chosen_dragon)
+                    self.trainer.attack_modify(self.chosen_dragon, 0)
+                    self.chosen_dragon.attack_bite(self, opponent.opponent)
+                    break
+                elif action == "1":
+                    self.trainer.speed_modify(self.chosen_dragon)
+                    self.trainer.attack_modify(self.chosen_dragon, 1)
+                    self.chosen_dragon.attack_breath_fire(self, opponent.opponent)
+                    break
+                elif action == "2":
+                    break
+                else:
+                    print("Invalid option!")
+            opponent_action = random.randint(0, 2)
+            print("Your opponent engages!")
+            if opponent_action == 0:
+                print("Your opponents dragon has bitten " + self.chosen_dragon.name)
+                opponent.speed_modify(opponent.opponent)
+                opponent.attack_modify(opponent.opponent, 0)
+                opponent.opponent.attack_bite(opponent, self.chosen_dragon)
+            elif opponent_action == 1:
+                print("Your oppents dragon challenges " + self.chosen_dragon.name + "s Thu'um")
+                opponent.speed_modify(opponent.opponent)
+                opponent.attack_modify(opponent.opponent, 1)
+                opponent.opponent.attack_breath_fire(opponent, self.chosen_dragon)
+            elif opponent_action == 2:
+                print("You opponets strafes evasively\n")
+        print(str(opponent.opponent.health) + " health remaining " + opponent.opponent.name + "\n")
+        print(str(self.chosen_dragon.health) + " health remaining " + self.chosen_dragon.name + "\n")
+        if self.chosen_dragon.health > 0:
+            print("Round One Concludes")
+        else:
+            self.lives -= 1
+            if self.lives <= 1:
+                print("Game Over!")
+                exit()
+            else:
+                pass
 
     def launch_game(self):
         print("Welcome... to \'The Skies of Keizhal\'.")
         self.define_username()
         print("                  " +
-              "Hello " + str(self.user_name) + "\n" +
+              "Hello " + str(self.name) + "\n" +
               "     Would you like to play the Tutorial?\n" +
               "(0 for no I've got this, 1 for yes im a bitch).\n")
         tutorial_yes_no = input(" ==> ")

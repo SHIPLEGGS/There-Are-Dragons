@@ -99,9 +99,6 @@ def saint_nerevar_moon_and_star(trainer):
 
 
 def special_attributes_unique_run(dragon, trainer, attack_type, enemy):
-    # special_attributes_list = ["Hiccup", "Miraak", "Astrid", "Isildur", "Reman Cyrodiil", "Tiber Septim",
-    #                          "Indoril Nerevar"]
-    # for i in special_attributes_list:
     if trainer.name == "Hiccup":
         toothless(dragon, trainer, attack_type)
     elif trainer.name == "Miraak":

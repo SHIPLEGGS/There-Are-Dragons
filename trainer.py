@@ -8,34 +8,33 @@ class Trainer:
         self.trainer_attack_modifiers = [self.strength, self.speed]
         self.trainer_speed_modifiers = self.speed
         self.dragons = []
+        self.opponent = None
         self.rounds_played = 0
 
     # Can modify a dragons attacks
     def attack_modify(self, dragon, attack_type):
         if attack_type == 0:
             trainer_modified_attack = 0
-            for i in range(len(self.dragons[dragon].attack_modifiers)):
-                trainer_modified_attack = self.trainer_attack_modifiers[i] * self.dragons[dragon].attack_modifiers[i]
-            self.dragons[dragon].attack_damage = (self.dragons[dragon].size +
-                                                  (self.dragons[dragon].attack_speed * self.dragons[
-                                                      dragon].attack_damage) + trainer_modified_attack)
-            self.dragons[dragon].magic_damage = 0
-            print(self.dragons[dragon].attack_damage)
+            for i in range(len(dragon.attack_modifiers)):
+                trainer_modified_attack = self.trainer_attack_modifiers[i] * dragon.attack_modifiers[i]
+            dragon.attack_damage = (dragon.size +
+                                    (dragon.attack_speed * dragon.attack_damage) + trainer_modified_attack)
+            dragon.magic_damage = 0
+            print(dragon.attack_damage, " Attack Damage! ")
         elif attack_type == 1:
-            self.dragons[dragon].magic_damage = self.dragons[dragon].magic_damage ** 2 * self.dragons[
-                dragon].intelligence / self.dragons[dragon].size
-            self.dragons[dragon].attack_damage = 0
-            print(self.dragons[dragon].magic_damage)
+            dragon.magic_damage = dragon.magic_damage ** 2 * dragon.intelligence / dragon.size
+            dragon.magic_damage += self.cunning * 1 / self.strength
+            dragon.attack_damage = 0
+            print(dragon.magic_damage, " Magic Damage")
 
     # Can modify a dragons speed
     def speed_modify(self, dragon):
         trainer_modified_speed = 0
-        for i in range(len(self.dragons[dragon].speed_modifiers)):
-            trainer_modified_speed += self.trainer_speed_modifiers * self.dragons[dragon].speed_modifiers[i]
-        self.dragons[dragon].speed = self.dragons[dragon].speed + trainer_modified_speed - (
-                self.dragons[dragon].size / 2)
-        self.dragons[dragon].attack_speed = self.dragons[dragon].attack_speed + trainer_modified_speed
-        print(self.dragons[dragon].attack_speed, self.dragons[dragon].speed)
+        for i in range(len(dragon.speed_modifiers)):
+            trainer_modified_speed += self.trainer_speed_modifiers * dragon.speed_modifiers[i]
+        dragon.speed = dragon.speed + trainer_modified_speed - (
+                dragon.size / 2)
+        dragon.attack_speed = dragon.attack_speed + trainer_modified_speed
 
     # Can level up a dragon
     def level_up_dragon(self, dragon):
