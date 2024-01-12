@@ -109,7 +109,7 @@ class User:
 
     def run_round(self):
         if self.failed_inputs >= 3:
-            print("Invalid inputs have exceeded the 3 idiot maximum. Terminating stupidity, get hands noob")
+            print("Invalid inputs have exceeded the 3 idiot maximum. Terminating stupidium, get hands noob")
             exit()
         first_or_second = random.randint(0, 1)
         first_or_second_attack = random.randint(0, 1)
@@ -173,13 +173,17 @@ class User:
             if opponent_action == 0:
                 print("Your opponents dragon has bitten " + self.chosen_dragon.name)
                 opponent.speed_modify(opponent.opponent)
+                user.trainer.prepare_attack_modify(self.chosen_dragon)
                 opponent.attack_modify(opponent.opponent, 0)
+                user.trainer.reset_attack_modify(self.chosen_dragon)
                 environment.apply_weather_factors()
                 opponent.opponent.attack_bite(opponent, self.chosen_dragon)
             elif opponent_action == 1:
                 print("Your oppents dragon challenges " + self.chosen_dragon.name + "s Thu'um")
                 opponent.speed_modify(opponent.opponent)
+                user.trainer.prepare_attack_modify(self.chosen_dragon)
                 opponent.attack_modify(opponent.opponent, 1)
+                user.trainer.reset_attack_modify(self.chosen_dragon)
                 environment.apply_weather_factors()
                 opponent.opponent.attack_breath_fire(opponent, self.chosen_dragon)
 
@@ -191,13 +195,17 @@ class User:
                 action = input(" ==> ")
                 if action == "0":
                     self.trainer.speed_modify(self.chosen_dragon)
+                    user.trainer.prepare_attack_modify(self.chosen_dragon)
                     self.trainer.attack_modify(self.chosen_dragon, 0)
-                    self.chosen_dragon.attack_bite(self, opponent)
+                    user.trainer.reset_attack_modify(self.chosen_dragon)
+                    self.chosen_dragon.attack_bite(self, opponent.opponent)
                     break
                 elif action == "1":
                     self.trainer.speed_modify(self.chosen_dragon)
+                    user.trainer.prepare_attack_modify(self.chosen_dragon)
                     self.trainer.attack_modify(self.chosen_dragon, 1)
-                    self.chosen_dragon.attack_breath_fire(self, opponent)
+                    user.trainer.reset_attack_modify(self.chosen_dragon)
+                    self.chosen_dragon.attack_breath_fire(self, opponent.opponent)
                     break
                 elif action == "2":
                     break
@@ -210,12 +218,16 @@ class User:
                 action = input(" ==> ")
                 if action == "0":
                     self.trainer.speed_modify(self.chosen_dragon)
+                    user.trainer.prepare_attack_modify(self.chosen_dragon)
                     self.trainer.attack_modify(self.chosen_dragon, 0)
+                    user.trainer.reset_attack_modify(self.chosen_dragon)
                     self.chosen_dragon.attack_bite(self, opponent.opponent)
                     break
                 elif action == "1":
                     self.trainer.speed_modify(self.chosen_dragon)
+                    user.trainer.prepare_attack_modify(self.chosen_dragon)
                     self.trainer.attack_modify(self.chosen_dragon, 1)
+                    user.trainer.reset_attack_modify(self.chosen_dragon)
                     self.chosen_dragon.attack_breath_fire(self, opponent.opponent)
                     break
                 elif action == "2":
@@ -241,17 +253,36 @@ class User:
         print(str(opponent.opponent.health) + " health remaining " + opponent.opponent.name + "\n")
         print(str(self.chosen_dragon.health) + " health remaining " + self.chosen_dragon.name + "\n")
         if self.chosen_dragon.health > 0:
-            print("Round One Concludes")
+            print("Round " + str(self.round_number) + " Concludes")
+            self.round_passed(self.chosen_dragon)
         else:
             self.lives -= 1
+            print("You have lost a life " + str(self.lives) + " remaining.\n")
+            print("Round " + str(self.round_number) + " Concludes")
+            self.round_passed(self.chosen_dragon)
             if self.lives <= 1:
                 print("Game Over!")
                 exit()
             else:
                 pass
+            if opponent.lives <= 1:
+                trainer.all_trainers.remove(opponent)
+                print(opponent.name + " Eliminated!\n")
+
+    def round_passed(self, dragon_chosen_last_round):
+        self.round_number += 1
+        dragon_chosen_last_round.level_up_dragon()
+
+    def round_repeater(self):
+        while user.lives > 0 and len(trainer.all_trainers) != 0:
+            if len(trainer.all_trainers) == 0:
+                print("You are VICTORIOUS!")
+            self.run_round()
+            if len(trainer.all_trainers) == 0:
+                print("You are VICTORIOUS!")
 
     def launch_game(self):
-        print("Welcome... to \'The Skies of Keizhal\'.")
+        print("Welcome... to \'The Skies of Keizhaal\'.")
         self.define_username()
         print("                  " +
               "Hello " + str(self.name) + "\n" +
@@ -265,10 +296,10 @@ class User:
             pass
         else:
             print("STOP TROLLING, I asked for 0 or 1\n Initiating punishment tutorial...\n")
+            self.failed_inputs += 1
             tutorial_run()
         self.game_setup()
-        self.run_round()
-
+        self.round_repeater()
 
 user = User()
 user.launch_game()

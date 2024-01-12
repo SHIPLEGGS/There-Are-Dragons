@@ -10,6 +10,16 @@ class Trainer:
         self.dragons = []
         self.opponent = None
         self.rounds_played = 0
+        self.temp_attack_damage = 0
+        self.temp_magic_damage = 0
+
+    def prepare_attack_modify(self, dragon):
+        self.temp_attack_damage = dragon.attack_damage
+        self.temp_magic_damage = dragon.magic_damage
+
+    def reset_attack_modify(self, dragon):
+        dragon.attack_damgae = self.temp_attack_damage
+        dragon.magic_damage = self.temp_magic_damage
 
     # Can modify a dragons attacks
     def attack_modify(self, dragon, attack_type):
@@ -22,38 +32,31 @@ class Trainer:
             dragon.magic_damage = 0
             print(dragon.attack_damage, " Attack Damage! ")
         elif attack_type == 1:
+            zero_divide_protection = 0
+            if dragon.size == 0:
+                dragon.size = 1
+                zero_divide_protection = 1
             dragon.magic_damage = dragon.magic_damage ** 2 * dragon.intelligence / dragon.size
             dragon.magic_damage += self.cunning * 1 / self.strength
             dragon.attack_damage = 0
             print(dragon.magic_damage, " Magic Damage")
+            if zero_divide_protection == 1:
+                dragon.size = 0
 
     # Can modify a dragons speed
     def speed_modify(self, dragon):
         trainer_modified_speed = 0
+        zero_divide_protection = 0
+        if dragon.size == 0:
+            dragon.size = 1
+            zero_divide_protection = 1
         for i in range(len(dragon.speed_modifiers)):
             trainer_modified_speed += self.trainer_speed_modifiers * dragon.speed_modifiers[i]
         dragon.speed = dragon.speed + trainer_modified_speed - (
                 dragon.size / 2)
         dragon.attack_speed = dragon.attack_speed + trainer_modified_speed
-
-    # Can level up a dragon
-    def level_up_dragon(self, dragon):
-        print(dragon, " has levelled up... ")
-        magic_or_attack = input("Level up fire breath, or level up physical attack: ")
-        smaller_or_bigger = input("Starve your dragon, or overfeed your dragon: ")
-        self.dragons[dragon].health += 50
-        self.dragons[dragon].speed += 1
-        if magic_or_attack == 0:
-            self.dragons[dragon].attack_damage += 2
-        else:
-            self.dragons[dragon].magic_damage += 2
-        if self.name == "Tiber Septim":
-            self.dragons[dragon].size += 1
-        if smaller_or_bigger == 0:
-            self.dragons[dragon].size += 1
-        else:
-            self.dragons[dragon].size -= 1
-
+        if zero_divide_protection == 1:
+            dragon.size = 0
     # Can allow their user to level up a dragon
     def dragon_level_up_choice(self):
         choice = input("Choose a dragon to level up: ")
@@ -61,7 +64,7 @@ class Trainer:
             print(str(self.dragons[i].name) + ": " + str(i))
             if choice == str(i):
                 choice_to_level_up = self.dragons[i]
-                self.level_up_dragon(choice_to_level_up)
+                self.dragons[i].level_up_dragon(choice_to_level_up)
 
     # Can increase their attributes
     def attribute_add(self):

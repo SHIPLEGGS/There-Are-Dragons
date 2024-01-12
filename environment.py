@@ -5,9 +5,9 @@ import dragon
 
 class Environment:
     def __init__(self):
-        weather_choice_1 = random.randint(0, 4)
-        weather_choice_2 = random.randint(0, 2)
-        weather_choice_3 = random.randint(0, 5)
+        weather_choice_1 = random.randint(1, 4)
+        weather_choice_2 = random.randint(1, 2)
+        weather_choice_3 = random.randint(1, 5)
 
         if weather_choice_1 == 1:
             self.weather = "Black"
@@ -32,7 +32,7 @@ class Environment:
             self.visibility = "Bad"
         elif weather_choice_3 == 4:
             self.visibility = "Blind"
-        elif weather_choice_3 == 5:
+        else:
             self.visibility = "All-Seeing"
 
     def apply_weather_factors(self):

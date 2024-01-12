@@ -1,5 +1,6 @@
-import special_attribute
+
 import trainer
+from special_attribute import special_attributes_unique_run
 
 
 def assign_dragons():
@@ -26,11 +27,11 @@ class Dragon:
         self.attack_types = [self.attack_damage, self.magic_damage]
 
     def attack_bite(self, user_trainer, enemy):
-        special_attribute.special_attributes_unique_run(self, user_trainer, 0, enemy)
+        special_attributes_unique_run(self, user_trainer, 0, enemy)
         enemy.health -= self.attack_damage
 
     def attack_breath_fire(self, user_trainer, enemy):
-        special_attribute.special_attributes_unique_run(self, user_trainer, 1, enemy)
+        special_attributes_unique_run(self, user_trainer, 1, enemy)
         enemy.health -= self.magic_damage
 
     def get_dragon_attributes(self):
@@ -39,6 +40,36 @@ class Dragon:
         print("Speed: " + str(self.speed) + " Size: " + str(self.size))
         print("Colour: " + str(self.camouflage) + " Vision: " + str(self.eyesight))
         print("Health: " + str(self.health) + " Intelligence: " + str(self.intelligence))
+
+    # Can level up a dragon
+    def level_up_dragon(self):
+        print(self.name, " has levelled up... ")
+        print("Level up fire breath, or level up physical attack: 0 ; 1")
+        print("Starve your dragon, or overfeed your dragon: 0 ; 1")
+        magic_or_attack = input(" ==> ")
+        smaller_or_bigger = input(" ==> ")
+        self.health += 50
+        self.speed += 1
+        if magic_or_attack == "0":
+            self.attack_damage += 2
+            print(self.attack_damage)
+        elif magic_or_attack == "1":
+            self.magic_damage += 2
+            print(self.magic_damage)
+        else:
+            print("Failed Input.")
+            return "input_fail"
+        if self.name == "Tiber Septim":
+            self.size += 1
+        if smaller_or_bigger == "0":
+            self.size += 1
+            print(self.size)
+        elif smaller_or_bigger == "1":
+            self.size -= 1
+            print(self.size)
+        else:
+            print("Failed Input.")
+            return "input_fail"
 
 
 Rongwield = Dragon("Rongwield", 1, 2, "Good", 5, "Black", 3)

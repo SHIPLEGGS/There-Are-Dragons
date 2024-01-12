@@ -1,5 +1,6 @@
 import random
-from environment import environment
+
+import environment
 from trainer import Miraak, Isildur, all_trainers
 
 
@@ -15,12 +16,10 @@ def toothless(dragon, trainer, attack_type):
     dragon.attack_modify(dragon, 1)
     dragon.magic_damage *= 0.25 * trainer.cunning
     print("Critical Strike!")
-    if environment.visibility == "Poor":
+    if environment.environment.visibility == "Bad" or environment.environment.visibility == "Blind":
         dragon.speed += 5
-        print("Too Slow")
-    if environment.weather == "Storm":
+    if environment.environment.weather == "Storm" or environment.environment.weather == "Invisible":
         dragon.magic_damage += 5
-        print("Lets give them a show!")
 
 
 def bend_will(trainer, enemy):
