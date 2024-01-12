@@ -2,6 +2,7 @@ import random
 
 import dragon
 import trainer
+from environment import environment
 
 
 def tutorial_run():
@@ -173,11 +174,13 @@ class User:
                 print("Your opponents dragon has bitten " + self.chosen_dragon.name)
                 opponent.speed_modify(opponent.opponent)
                 opponent.attack_modify(opponent.opponent, 0)
+                environment.apply_weather_factors()
                 opponent.opponent.attack_bite(opponent, self.chosen_dragon)
             elif opponent_action == 1:
                 print("Your oppents dragon challenges " + self.chosen_dragon.name + "s Thu'um")
                 opponent.speed_modify(opponent.opponent)
                 opponent.attack_modify(opponent.opponent, 1)
+                environment.apply_weather_factors()
                 opponent.opponent.attack_breath_fire(opponent, self.chosen_dragon)
 
             elif opponent_action == 2:
@@ -225,11 +228,13 @@ class User:
                 print("Your opponents dragon has bitten " + self.chosen_dragon.name)
                 opponent.speed_modify(opponent.opponent)
                 opponent.attack_modify(opponent.opponent, 0)
+                environment.apply_weather_factors()
                 opponent.opponent.attack_bite(opponent, self.chosen_dragon)
             elif opponent_action == 1:
                 print("Your oppents dragon challenges " + self.chosen_dragon.name + "s Thu'um")
                 opponent.speed_modify(opponent.opponent)
                 opponent.attack_modify(opponent.opponent, 1)
+                environment.apply_weather_factors()
                 opponent.opponent.attack_breath_fire(opponent, self.chosen_dragon)
             elif opponent_action == 2:
                 print("You opponets strafes evasively\n")
