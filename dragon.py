@@ -34,6 +34,9 @@ class Dragon:
         special_attributes_unique_run(self, user_trainer, 1, enemy)
         enemy.health -= self.magic_damage
 
+    def dodge(self, user_trainer, enemy):
+        pass
+
     def get_dragon_attributes(self):
         print(str(self.name) + "s Attributes: ")
         print("Attack Damage: " + str(self.attack_damage) + " Magic Damage: " + str(self.magic_damage))
@@ -43,33 +46,43 @@ class Dragon:
 
     # Can level up a dragon
     def level_up_dragon(self):
+        choice_input = 0
         print(self.name, " has levelled up... ")
         print("Level up fire breath, or level up physical attack: 0 ; 1")
         print("Starve your dragon, or overfeed your dragon: 0 ; 1")
-        magic_or_attack = input(" ==> ")
-        smaller_or_bigger = input(" ==> ")
         self.health += 50
         self.speed += 1
-        if magic_or_attack == "0":
-            self.attack_damage += 2
-            print(self.attack_damage)
-        elif magic_or_attack == "1":
-            self.magic_damage += 2
-            print(self.magic_damage)
-        else:
-            print("Failed Input.")
-            return "input_fail"
         if self.name == "Tiber Septim":
             self.size += 1
-        if smaller_or_bigger == "0":
-            self.size += 1
-            print(self.size)
-        elif smaller_or_bigger == "1":
-            self.size -= 1
-            print(self.size)
-        else:
-            print("Failed Input.")
-            return "input_fail"
+        while True:
+            if choice_input == 0:
+                magic_or_attack = input(" ==> ")
+                if magic_or_attack == "0":
+                    self.attack_damage += 2
+                    print(self.attack_damage)
+                    choice_input = 1
+                elif magic_or_attack == "1":
+                    self.magic_damage += 2
+                    print(self.magic_damage)
+                    choice_input = 1
+                else:
+                    print("Failed Input.")
+                    choice_input = 0
+            elif choice_input == 1:
+                smaller_or_bigger = input(" ==> ")
+                if smaller_or_bigger == "0":
+                    self.size += 1
+                    print(self.size)
+                    choice_input = 2
+                elif smaller_or_bigger == "1":
+                    self.size -= 1
+                    print(self.size)
+                    choice_input = 2
+                else:
+                    print("Failed Input.")
+                    choice_input = 1
+            else:
+                break
 
 
 Rongwield = Dragon("Rongwield", 1, 2, "Good", 5, "Black", 3)

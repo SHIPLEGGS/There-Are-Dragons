@@ -1,8 +1,8 @@
 import random
 
 import dragon
+import special_attribute
 import trainer
-from environment import environment
 
 
 def tutorial_run():
@@ -107,7 +107,28 @@ class User:
                     choice_input = 3
                     self.failed_inputs += 1
 
+    def append_dragon(self):
+        print("Choose a dragon: ")
+        for i in dragon.all_dragons:
+            print(i.name + " " + str(self.choice_increment()))
+            self.choice = -1
+        while True:
+            choice = input(" ==> ")
+            try:
+                choice = int(choice)
+                if choice not in range(len(dragon.all_dragons)):
+                    print("You have not selected a valid option.")
+                    self.failed_inputs += 1
+                else:
+                    chosen_dragon = dragon.all_dragons[choice]
+                    self.dragons.append(chosen_dragon)
+                    break
+            except ValueError:
+                print("Invalid response")
+                self.failed_inputs += 1
+
     def run_round(self):
+        strafe = 0
         if self.failed_inputs >= 3:
             print("Invalid inputs have exceeded the 3 idiot maximum. Terminating stupidium, get hands noob")
             exit()
@@ -116,7 +137,7 @@ class User:
         choice = random.randint(0, len(trainer.all_trainers) - 1)
         choice_1 = random.randint(0, len(trainer.beginner_trainers) - 1)
         print("Round -- " + str(self.round_number) + "\n")
-        if self.friendly_intro < 2:
+        if self.round_number < 2:
             opponent = trainer.beginner_trainers[choice_1]
             dragon_choice = random.randint(0, len(opponent.dragons) - 1)
         else:
@@ -124,13 +145,16 @@ class User:
             dragon_choice = random.randint(0, len(opponent.dragons) - 1)
         print("Your opponent is: " + opponent.name)
         if first_or_second == 0:
-            print("They have chosen: " + opponent.dragons[dragon_choice].name)
+            print("They have chosen: " + opponent.dragons[dragon_choice].name + "\n")
             opponent.opponent = opponent.dragons[dragon_choice]
             opponent.dragons[dragon_choice].get_dragon_attributes()
+            print("")
         else:
-            for i in self.dragons:
+            if len(self.dragons) > 1:
                 print("Which dragon would you like to pick: ")
-                print(i.name + " " + str(self.choice_increment()))
+                for i in self.dragons:
+                    print(i.name + " " + str(self.choice_increment()))
+                    self.choice = -1
                 while True:
                     chose_dragon = input(" ==> ")
                     try:
@@ -145,14 +169,20 @@ class User:
                     except ValueError:
                         print("Invalid response")
                         self.failed_inputs += 1
+            else:
+                self.chosen_dragon = self.dragons[0]
+
         if first_or_second == 1:
-            print("They have chosen: " + opponent.dragons[dragon_choice].name)
+            print("They have chosen: " + opponent.dragons[dragon_choice].name + "\n")
             opponent.opponent = opponent.dragons[dragon_choice]
             opponent.dragons[dragon_choice].get_dragon_attributes()
+            print("")
         else:
-            for i in self.dragons:
+            if len(self.dragons) > 1:
                 print("Which dragon would you like to pick: ")
-                print(i.name + " " + str(self.choice_increment()))
+                for i in self.dragons:
+                    print(i.name + " " + str(self.choice_increment()))
+                    self.choice = -1
                 while True:
                     chose_dragon = input(" ==> ")
                     try:
@@ -167,6 +197,9 @@ class User:
                     except ValueError:
                         print("Invalid response")
                         self.failed_inputs += 1
+
+            else:
+                self.chosen_dragon = self.dragons[0]
         if first_or_second_attack == 0:
             opponent_action = random.randint(0, 2)
             print("Your opponent engages!")
@@ -176,7 +209,7 @@ class User:
                 user.trainer.prepare_attack_modify(self.chosen_dragon)
                 opponent.attack_modify(opponent.opponent, 0)
                 user.trainer.reset_attack_modify(self.chosen_dragon)
-                environment.apply_weather_factors()
+                special_attribute.apply_weather_factors(opponent.opponent)
                 opponent.opponent.attack_bite(opponent, self.chosen_dragon)
             elif opponent_action == 1:
                 print("Your oppents dragon challenges " + self.chosen_dragon.name + "s Thu'um")
@@ -184,13 +217,14 @@ class User:
                 user.trainer.prepare_attack_modify(self.chosen_dragon)
                 opponent.attack_modify(opponent.opponent, 1)
                 user.trainer.reset_attack_modify(self.chosen_dragon)
-                environment.apply_weather_factors()
+                special_attribute.apply_weather_factors(opponent.opponent)
                 opponent.opponent.attack_breath_fire(opponent, self.chosen_dragon)
 
             elif opponent_action == 2:
                 print("You opponets strafes evasively\n")
+                strafe = 1
             print("Command your dragon!")
-            print("Bite: 0\nVerbal Assault: 1\nDodge: 2")
+            print("Bite: 0\nVerbal Assault: 1\n")
             while True:
                 action = input(" ==> ")
                 if action == "0":
@@ -198,6 +232,9 @@ class User:
                     user.trainer.prepare_attack_modify(self.chosen_dragon)
                     self.trainer.attack_modify(self.chosen_dragon, 0)
                     user.trainer.reset_attack_modify(self.chosen_dragon)
+                    special_attribute.apply_weather_factors(self.chosen_dragon)
+                    if strafe == 1:
+                        self.chosen_dragon.attack_damage -= (self.chosen_dragon.attack_damage / 100) * 80
                     self.chosen_dragon.attack_bite(self, opponent.opponent)
                     break
                 elif action == "1":
@@ -205,12 +242,14 @@ class User:
                     user.trainer.prepare_attack_modify(self.chosen_dragon)
                     self.trainer.attack_modify(self.chosen_dragon, 1)
                     user.trainer.reset_attack_modify(self.chosen_dragon)
+                    special_attribute.apply_weather_factors(self.chosen_dragon)
+                    if strafe == 1:
+                        self.chosen_dragon.magic_damage -= (self.chosen_dragon.magic_damage / 100) * 80
                     self.chosen_dragon.attack_breath_fire(self, opponent.opponent)
-                    break
-                elif action == "2":
                     break
                 else:
                     print("Invalid option!")
+
         else:
             print("Command your dragon!")
             print("Bite: 0\nVerbal Assault: 1\nDodge: 2")
@@ -221,6 +260,7 @@ class User:
                     user.trainer.prepare_attack_modify(self.chosen_dragon)
                     self.trainer.attack_modify(self.chosen_dragon, 0)
                     user.trainer.reset_attack_modify(self.chosen_dragon)
+                    special_attribute.apply_weather_factors(self.chosen_dragon)
                     self.chosen_dragon.attack_bite(self, opponent.opponent)
                     break
                 elif action == "1":
@@ -228,9 +268,11 @@ class User:
                     user.trainer.prepare_attack_modify(self.chosen_dragon)
                     self.trainer.attack_modify(self.chosen_dragon, 1)
                     user.trainer.reset_attack_modify(self.chosen_dragon)
+                    special_attribute.apply_weather_factors(self.chosen_dragon)
                     self.chosen_dragon.attack_breath_fire(self, opponent.opponent)
                     break
                 elif action == "2":
+                    strafe = 2
                     break
                 else:
                     print("Invalid option!")
@@ -240,13 +282,17 @@ class User:
                 print("Your opponents dragon has bitten " + self.chosen_dragon.name)
                 opponent.speed_modify(opponent.opponent)
                 opponent.attack_modify(opponent.opponent, 0)
-                environment.apply_weather_factors()
+                special_attribute.apply_weather_factors(opponent.opponent)
+                if strafe == 2:
+                    opponent.opponent.attack_damage -= (opponent.opponent.attack_damage / 100) * 80
                 opponent.opponent.attack_bite(opponent, self.chosen_dragon)
             elif opponent_action == 1:
                 print("Your oppents dragon challenges " + self.chosen_dragon.name + "s Thu'um")
                 opponent.speed_modify(opponent.opponent)
                 opponent.attack_modify(opponent.opponent, 1)
-                environment.apply_weather_factors()
+                special_attribute.apply_weather_factors(opponent.opponent)
+                if strafe == 2:
+                    opponent.opponent.magic_damage -= (opponent.opponent.magic_damage / 100) * 80
                 opponent.opponent.attack_breath_fire(opponent, self.chosen_dragon)
             elif opponent_action == 2:
                 print("You opponets strafes evasively\n")
@@ -255,6 +301,9 @@ class User:
         if self.chosen_dragon.health > 0:
             print("Round " + str(self.round_number) + " Concludes")
             self.round_passed(self.chosen_dragon)
+            if self.round_number % 3 == 0 and self.round_number != 0:
+                self.append_dragon()
+
         else:
             self.lives -= 1
             print("You have lost a life " + str(self.lives) + " remaining.\n")
@@ -300,6 +349,7 @@ class User:
             tutorial_run()
         self.game_setup()
         self.round_repeater()
+
 
 user = User()
 user.launch_game()

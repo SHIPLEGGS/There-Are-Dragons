@@ -97,6 +97,17 @@ def saint_nerevar_moon_and_star(trainer):
             trainer.level_up_dragon(my_dragon)
 
 
+def apply_weather_factors(dragon):
+    if dragon.eyesight == environment.environment.visibility:
+        dragon.attack_speed += 2
+    if dragon.camouflage == environment.environment.weather:
+        dragon.size += 2
+    if environment.environment.temperature == "warm":
+        dragon.attack_damage += 2
+    else:
+        dragon.magic_damage += 2
+
+
 def special_attributes_unique_run(dragon, trainer, attack_type, enemy):
     if trainer.name == "Hiccup":
         toothless(dragon, trainer, attack_type)

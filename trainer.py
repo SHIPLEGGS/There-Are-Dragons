@@ -36,6 +36,9 @@ class Trainer:
             if dragon.size == 0:
                 dragon.size = 1
                 zero_divide_protection = 1
+            elif self.strength == 0:
+                self.strength = 1
+                zero_divide_protection = 1
             dragon.magic_damage = dragon.magic_damage ** 2 * dragon.intelligence / dragon.size
             dragon.magic_damage += self.cunning * 1 / self.strength
             dragon.attack_damage = 0
@@ -57,6 +60,7 @@ class Trainer:
         dragon.attack_speed = dragon.attack_speed + trainer_modified_speed
         if zero_divide_protection == 1:
             dragon.size = 0
+
     # Can allow their user to level up a dragon
     def dragon_level_up_choice(self):
         choice = input("Choose a dragon to level up: ")

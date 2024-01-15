@@ -1,7 +1,5 @@
 import random
 
-import dragon
-
 
 class Environment:
     def __init__(self):
@@ -34,17 +32,6 @@ class Environment:
             self.visibility = "Blind"
         else:
             self.visibility = "All-Seeing"
-
-    def apply_weather_factors(self):
-        for i in dragon.all_dragons:
-            if i.eyesight == self.visibility:
-                i.attack_speed += 2
-            if i.camouflage == self.weather:
-                i.size += 2
-            if self.temperature == "warm":
-                i.attack_damage += 2
-            else:
-                i.magic_damage += 2
 
 
 environment = Environment()
